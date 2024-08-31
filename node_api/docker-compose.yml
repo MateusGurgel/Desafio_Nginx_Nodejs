@@ -1,0 +1,13 @@
+services:
+  database:
+    image: mysql:5.7
+    tty: true
+    command: --innodb-use-native-aio=0
+    container_name: database
+    volumes:
+      - ./database:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: database
+    ports:
+      - "3306:3306"

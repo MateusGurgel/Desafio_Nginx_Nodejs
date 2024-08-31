@@ -1,0 +1,41 @@
+services:
+  database:
+    image: mysql:5.7
+    tty: true
+    command: --innodb-use-native-aio=0
+    container_name: database
+    volumes:
+      - ./database:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: database
+    ports:
+      - "3306:3306"
+    networks:
+      - backend
+
+  api:
+    build:
+      context: node_api/
+    depends_on:
+      - database
+    ports:
+      - "3000:3000"
+    networks:
+      - backend
+  
+  nginx:
+    image: nginx
+    container_name: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8080:8080"
+    depends_on:
+      - api
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
