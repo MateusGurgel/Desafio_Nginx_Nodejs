@@ -2,10 +2,11 @@ services:
   database:
     image: mysql:5.7
     tty: true
-    command: --innodb-use-native-aio=0
+    command: --innodb-use-native-aio=0 --init-file /data/application/init.sql
     container_name: database
     volumes:
       - ./database:/var/lib/mysql
+      - ./init.sql:/data/application/init.sql
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: database
@@ -28,6 +29,8 @@ services:
         condition: service_healthy
     ports:
       - "3000:3000"
+    volumes:
+      - ./node_api:/app
     networks:
       - backend
   
