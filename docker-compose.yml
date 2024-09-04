@@ -13,12 +13,19 @@ services:
       - "3306:3306"
     networks:
       - backend
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      timeout: 10s
+      retries: 3
+
 
   api:
     build:
       context: node_api/
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     ports:
       - "3000:3000"
     networks:
